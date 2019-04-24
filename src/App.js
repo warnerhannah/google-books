@@ -1,25 +1,46 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch
+} from "react-router-dom"; 
 import './App.css';
+import Saved from "./pages/Saved"
+import Search from "./pages/Search"
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header>
+          <h3>Google Books</h3>
+          <div className="links">
+            <Link className="link" to="/saved">Saved Books</Link>
+            <Link className="link" to="/search">Search</Link>
+          </div>
+        </header>
+
+        <div className="title">
+            <h1>(React) Google Books Search</h1>
+            <h3>
+              Search for and Save Books of Interest
+            </h3>
+        </div>
+
+        <Switch>
+          <Route
+            exact path="/saved"
+            component={Saved}
+          />
+          <Route
+            exact path="/search"
+            component={Search}
+          />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
