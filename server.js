@@ -3,7 +3,8 @@ const path = require("path");
 const PORT = process.env.PORT || 3001;
 const app = express();
 const mongoose = require("mongoose")
-const db = require("./client/models/index")
+const db = require("./models")
+const axios = require("axios")
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));
@@ -14,37 +15,52 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // Define API routes here
-app.get("/api/books", (req,res) => {
+app.get("/api/saved", (req, res) => {
   db.Book.find({})
-  .then(dbBook => {
-    res.json(dbBook)
-  })
-  .catch(err => {
-    res.json(err)
-  })
+    .then(dbBook => {
+      res.json(dbBook)
+    })
+    .catch(err => {
+      res.json(err)
+    })
 })
 
+app.post("/api/saved", (req, res) => {
+  console.log(req.body)
+  db.Book.create({
+    title: req.body.volumeInfo.title,
+    authors: req.body.volumeInfo.authors[0],
+    description: req.body.volumeInfo.description,
+    image: req.body.volumeInfo.imageLinks.thumbnail,
+    link: req.body.accessInfo.webReaderLink
+  })
+    .then(dbBook => {
+      res.json(dbBook)
+    })
+    .catch(err => {
+      res.json(err)
+    })
+})
 
+app.post("/api/saved/:id", (req, res) => {
+  console.log(req)
+  db.Book.remove({ _id: req.id })
+    .then(dbBook => {
+      console.log(dbBook)
+      res.json(dbBook)
+    })
+})
 
-// app.get("/api/members", (req, res) => {
-//   db.Member.find({})
-//   .then(dbMember =>{
-//     res.json(dbMember)
-//   })
-//   .catch(err => {
-//     res.json(err)
-//   })
-// })
-
-// app.post("/api/new", (req, res) => {
-//   console.log(req)
-//   db.Member.create(req.body)
-//   .then(dbMember => {
-//     res.json(dbMember)
-//   })
-//   .catch(err => {
-//     res.json(err)
-//   })
+// app.get("/api/googlebooks", (req, res) => {
+//   let parameter = req.search
+//   axios.get("https://www.googleapis.com/books/v1/volumes?q=harry+potter")
+//     .then(function (response) {
+//       console.log(response.data);
+//       res.json(response)
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
 // })
 
 
@@ -54,7 +70,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/googlebooks", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/googlebooks", { useNewUrlParser: true });
 
 app.listen(PORT, () => {
   console.log(`🌎 ==> API server now on port ${PORT}!`);

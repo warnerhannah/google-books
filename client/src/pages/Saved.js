@@ -7,8 +7,15 @@ class Saved extends Component {
         books: []
     }
 
+    deleteBook(id) {
+        API.deleteBook(id)
+        .then(res => {
+            
+        })
+    }
+
     componentDidMount() {
-        API.getBooks()
+        API.getSaved()
             .then(res => {
                 this.setState({ books: res.data })
             })
@@ -25,7 +32,7 @@ class Saved extends Component {
                                 <h3>{book.title}</h3>
                                 <div className="button">
                                     <a href={book.link}>View</a>
-                                    <a href="/api/delete">Delete</a>
+                                    <a href={this.deleteBook(book._id)}>Delete</a>
                                 </div>
                             </div>
                             <p>Written By: {book.authors}</p>

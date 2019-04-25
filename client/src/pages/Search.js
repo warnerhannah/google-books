@@ -5,7 +5,16 @@ import API from "../utils/API";
 
 class Search extends Component {
     state = {
+        search: "",
         books: []
+    }
+
+    saveBook = (book) => {
+        API.saveBook(book)
+        .then(res => {
+            alert("Saved!")
+            console.log(res)
+        })
     }
 
     handleInputChange = (e) => {
@@ -13,10 +22,16 @@ class Search extends Component {
         this.setState({ [name]: value })
     }
 
-    handleFormSubmit() {
-        API.searchBook()
+    searchMyBook = (e) => {
+        e.preventDefault();
+
+        console.log("search")
+        API.searchBook(this.state.search)
         .then(res => {
-            this.setState({ books: res.data })
+            console.log("searched")
+            this.setState({
+                books: res
+            })
         })
     }
 
@@ -28,13 +43,12 @@ class Search extends Component {
                     <h5 className="left">Book</h5>
                     <form>
                         <input
-                            name="Search"
+                            name="search"
                             placeholder="Title"
-                            value={this.state.title}
-                            onChange={this.handleInputchange}>
+                            onChange={this.handleInputChange}>
                         </input>
                         <button
-                            onClick={this.handleFormSubmit}>
+                            onClick={this.searchMyBook}>
                         Search
                         </button>
                     </form>
@@ -48,16 +62,16 @@ class Search extends Component {
                     {this.state.books.map(book => (
                         <div className="book">
                             <div className="top">
-                                <h3>{book.title}</h3>
+                                <h3>{book.volumeInfo.title}</h3>
                                 <div className="button">
-                                    <a href={book.link}>View</a>
-                                    <a href="/api/books/:id">Save</a>
+                                    <a href={book.accessInfo.webReaderLink}>View</a>
+                                    <button onClick={() => this.saveBook(book)}>Save</button>
                                 </div>
                             </div>
-                            <p>Written By: {book.authors}</p>
+                            <p>Written By: {book.volumeInfo.authors[0]}</p>
                             <div className="body">
-                                <img src={book.image} alt="Book"></img>
-                                <p>{book.description}</p>
+                                <img src={book.volumeInfo.imageLinks.thumbnail} alt="Book"></img>
+                                <p>{book.volumeInfo.description}</p>
                             </div>
                         </div>
                     ))}
