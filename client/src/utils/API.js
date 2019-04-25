@@ -10,13 +10,8 @@ export default {
     },
 
     deleteBook: function (id) {
-        return axios.post("/api/saved/:id", (id))
+        return axios.post(`/api/delete/${id}`)
     },
-
-
-    // searchBook: function (search) {
-    //     return axios.get("/api/googlebooks")
-    // }
 
     searchBook: function (search) {
         return (axios.get(`https://www.googleapis.com/books/v1/volumes?q=${search}`)

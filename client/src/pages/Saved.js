@@ -7,10 +7,14 @@ class Saved extends Component {
         books: []
     }
 
-    deleteBook(id) {
+    deleteBook = (id) => {
+        console.log(id)
         API.deleteBook(id)
         .then(res => {
-            
+            API.getSaved()
+            .then(res => {
+                this.setState({ books: res.data })
+            })
         })
     }
 
@@ -32,7 +36,9 @@ class Saved extends Component {
                                 <h3>{book.title}</h3>
                                 <div className="button">
                                     <a href={book.link}>View</a>
-                                    <a href={this.deleteBook(book._id)}>Delete</a>
+                                    <button
+                                    onClick={() => this.deleteBook(book._id)}
+                                    >Delete</button>
                                 </div>
                             </div>
                             <p>Written By: {book.authors}</p>

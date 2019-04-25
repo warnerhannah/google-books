@@ -42,27 +42,14 @@ app.post("/api/saved", (req, res) => {
     })
 })
 
-app.post("/api/saved/:id", (req, res) => {
-  console.log(req)
-  db.Book.remove({ _id: req.id })
+app.post("/api/delete/:id", (req, res) => {
+  db.Book.findById(req.params.id)
+    .remove()
     .then(dbBook => {
       console.log(dbBook)
       res.json(dbBook)
     })
 })
-
-// app.get("/api/googlebooks", (req, res) => {
-//   let parameter = req.search
-//   axios.get("https://www.googleapis.com/books/v1/volumes?q=harry+potter")
-//     .then(function (response) {
-//       console.log(response.data);
-//       res.json(response)
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-// })
-
 
 // Send every other request to the React app
 // Define any API routes before this runs
